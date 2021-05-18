@@ -5,7 +5,7 @@ Note that due to some unsupported hardware, this port will most likely not end u
 
 * DH89xxCC GPIO Driver
 * NU801 LED Driver
-* DH89xxCC Watchdog Driver
+* DH89xxCC Watchdoopenwrt-x86-64-generic-squashfs-combined-efi.imgg Driver
 
 Building
 -----
@@ -27,15 +27,17 @@ Flashing
 To Do
 -----
 ##### MX100
-* LED's/GPIOs
-* Reset button
-* System Integration
+* System Integration (WIP)
+* NU801 Power LED
 * Watchdog
+* Other?
 
 Working
 -----
 ##### MX100
 * Ethernet
+* LED's/GPIOs
+* Reset button
 * Sysupgrade Support
 * Kernel Device Profile
 
