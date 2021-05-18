@@ -5,7 +5,7 @@ Note that due to some unsupported hardware, this port will most likely not end u
 
 * DH89xxCC GPIO Driver
 * NU801 LED Driver
-* DH89xxCC Watchdoopenwrt-x86-64-generic-squashfs-combined-efi.imgg Driver
+* DH89xxCC Watchdog Driver
 
 Building
 -----
