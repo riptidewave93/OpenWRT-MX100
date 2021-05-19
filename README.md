@@ -17,6 +17,15 @@ Building
 
 Note that you will need to run a modify on the first compile to select the x86 target, x86_64 subtarget in the menuconfig.
 
+UART Pinout
+-----
+Look for a 4 pin header named CONN11 in the middle of the PCB. Pin 1 is the marked pin on the PCB closest to the CPU.
+
+Pin 1 = VCC
+Pin 2 = TX
+Pin 3 = RX
+Pin 4 = GND
+
 Booting
 -----
  * Flash/burn one of the images from this repo to a flash drive.
