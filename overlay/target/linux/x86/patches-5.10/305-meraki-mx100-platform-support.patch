@@ -32,13 +32,13 @@ diff -Naur linux-5.10.37-untouched/arch/x86/platform/meraki/Makefile linux-5.10.
 diff -Naur linux-5.10.37-untouched/arch/x86/platform/meraki/tink.c linux-5.10.37/arch/x86/platform/meraki/tink.c
 --- linux-5.10.37-untouched/arch/x86/platform/meraki/tink.c	1969-12-31 18:00:00.000000000 -0600
 +++ linux-5.10.37/arch/x86/platform/meraki/tink.c	2021-05-18 07:57:08.080830704 -0500
-@@ -0,0 +1,183 @@
+@@ -0,0 +1,181 @@
 +#include <linux/kernel.h>
 +#include <linux/module.h>
 +#include <linux/dmi.h>
 +
 +#include <linux/leds.h>
-+/*#include <linux/leds-nu801.h>*/
++#include <linux/leds-nu801.h>
 +#include <linux/platform_device.h>
 +#include <linux/gpio.h>
 +#include <linux/input.h>
@@ -150,8 +150,7 @@ diff -Naur linux-5.10.37-untouched/arch/x86/platform/meraki/tink.c linux-5.10.37
 +	}
 +};
 +
-+/*
-+static struct led_nu801_template tricolor_led_template = {
++static struct led_nu801_template tink_tricolor_led_template = {
 +    .device_name = "mx100",
 +    .name = "tricolor",
 +    .num_leds = 1,
@@ -165,30 +164,29 @@ diff -Naur linux-5.10.37-untouched/arch/x86/platform/meraki/tink.c linux-5.10.37
 +        LED_OFF,
 +    },
 +    .default_trigger = "none",
-+    .led_colors = { "red", "green", "blue" },
++    .led_colors = { "blue", "green", "red" },
 +};
 +
-+static struct led_nu801_platform_data tricolor_led_data = {
++static struct led_nu801_platform_data tink_tricolor_led_data = {
 +    .num_controllers = 1,
-+    .template = &tricolor_led_template,
++    .template = &tink_tricolor_led_template,
 +};
 +
-+static struct platform_device tricolor_leds = {
++static struct platform_device tink_tricolor_leds = {
 +    .name = "leds-nu801",
 +    .id = -1,
-+    .dev.platform_data = &tricolor_led_data,
++    .dev.platform_data = &tink_tricolor_led_data,
 +};
 +
-+static struct platform_device wdt = {
++static struct platform_device tink_wdt = {
 +    .name = "dh89xxx-wdt",
 +};
-+*/
 +
 +static struct platform_device *tink_devs[] __initdata = {
 +        &tink_leds_dev,
 +        &tink_buttons_dev,
-+        /*&tricolor_leds,
-+        &wdt,*/
++        &tink_tricolor_leds,
++        &tink_wdt,
 +};
 +
 +static int __init tink_init(void)
