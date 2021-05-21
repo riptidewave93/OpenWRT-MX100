@@ -1,0 +1,11 @@
+diff -Naur linux-5.10.37-untouched/drivers/mfd/lpc_ich.c linux-5.10.37/drivers/mfd/lpc_ich.c
+--- linux-5.10.37-untouched/drivers/mfd/lpc_ich.c	2021-05-20 19:41:32.298881088 -0500
++++ linux-5.10.37/drivers/mfd/lpc_ich.c	2021-05-20 19:40:16.254487490 -0500
+@@ -489,6 +489,7 @@
+ 	[LPC_DH89XXCC] = {
+ 		.name = "DH89xxCC",
+ 		.iTCO_version = 2,
++		.gpio_version = ICH_V6_GPIO,
+ 	},
+ 	[LPC_PPT] = {
+ 		.name = "Panther Point",

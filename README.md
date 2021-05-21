@@ -1,12 +1,6 @@
 # OpenWRT-MX100
 Bringup for the Cisco Meraki MX100 on OpenWRT.
 
-Note that due to some unsupported hardware, this port will most likely not end up upstream. If you would like to see this fixed, the following drivers would need porting to mainline linux:
-
-* NU801 LED Driver
-* DH89xxCC GPIO Driver
-* DH89xxCC Watchdog Driver
-
 Building
 -----
 #### Build Only
@@ -52,7 +46,7 @@ Once done, you can power off the MX100, plug the SATA disk back in, and power it
 To Do
 -----
 ##### MX100
-* Misc patch/kernel Cleanup
+* Reset button (polling issue atm)
 * Other?
 
 Working
@@ -60,13 +54,9 @@ Working
 ##### MX100
 * Ethernet
 * NU801 Driver
-* DH89xxCC GPIO Driver
-* DH89xxCC Watchdog Driver
 * LED's/GPIOs
-* Reset button
 * System Integration
 * Sysupgrade Support
-* Kernel Device Profile
 
 Notice
 ------
