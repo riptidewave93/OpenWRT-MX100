@@ -5,7 +5,7 @@ diff -Naur linux-5.10.37-untouched/drivers/mfd/lpc_ich.c linux-5.10.37/drivers/m
  	[LPC_DH89XXCC] = {
  		.name = "DH89xxCC",
  		.iTCO_version = 2,
-+		.gpio_version = ICH_V6_GPIO,
++		.gpio_version = ICH_V5_GPIO,
  	},
  	[LPC_PPT] = {
  		.name = "Panther Point",

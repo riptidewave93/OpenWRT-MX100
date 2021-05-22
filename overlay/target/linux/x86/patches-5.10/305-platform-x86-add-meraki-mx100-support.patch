@@ -63,7 +63,7 @@ diff -Naur linux-5.10.37-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +#include <linux/module.h>
 +#include <linux/platform_device.h>
 +
-+#define TINK_GPIO_OFFSET	462
++#define TINK_GPIO_OFFSET	436
 +
 +/* LEDs */
 +

@@ -65,6 +65,7 @@ if [ "$modify" -eq "1" ]; then
   cd $clonedir
   Msg "Loading Menuconfig"
   make menuconfig -j`nproc` V=s
+  make kernel_menuconfig -j`nproc` V=s CONFIG_TARGET=subtarget
   cd - > /dev/null
 fi
 
