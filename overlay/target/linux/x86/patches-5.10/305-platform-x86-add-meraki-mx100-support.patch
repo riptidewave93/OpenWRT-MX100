@@ -190,7 +190,7 @@ diff -Naur linux-5.10.37-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +
 +static struct platform_device *tink_nu801_pdev;
 +static struct platform_device *tink_leds_pdev;
-+static struct platform_device *tink_keys_pdev;
++/*static struct platform_device *tink_keys_pdev;*/
 +
 +static struct platform_device * __init tink_create_dev(
 +	const char *name,
@@ -233,17 +233,17 @@ diff -Naur linux-5.10.37-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +		&tink_leds_pdata,
 +		sizeof(tink_leds_pdata));
 +
-+	tink_keys_pdev = tink_create_dev(
++	/*tink_keys_pdev = tink_create_dev(
 +		"gpio-keys-polled",
 +		&tink_buttons_pdata,
-+		sizeof(tink_buttons_pdata));
++		sizeof(tink_buttons_pdata));*/
 +
 +	return 0;
 +}
 +
 +static void __exit tink_board_exit(void)
 +{
-+	platform_device_unregister(tink_keys_pdev);
++	/*platform_device_unregister(tink_keys_pdev);*/
 +	platform_device_unregister(tink_leds_pdev);
 +	platform_device_unregister(tink_nu801_pdev);
 +}
