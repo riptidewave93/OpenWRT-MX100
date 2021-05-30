@@ -449,18 +449,18 @@ static int ichx_gpio_probe(struct platform_device *pdev)
 	if (err)
 		return err;
 
+	ichx_priv.gpio_base = res_base;
+	ichx_priv.use_gpio = ich_info->use_gpio;
+
 	/* Debug GPIO_USE_SEL2 */
-	config_data = inl((u64)res_base + 0x034);
-	dev_notice(dev, ": GPIO DEBUG - GPIO_USE_SEL2 = 0x%x\n",
+	config_data = inl((res_base)->start + 0x030);
+	dev_notice(dev, ": GPIO DEBUG - GPIO_USE_SEL2 0x30 = 0x%08x\n",
 					config_data);
 
 	/* Debug GP_IO_SEL2 */
-	config_data = inl((u64)res_base + 0x038);
-	dev_notice(dev, ": GPIO DEBUG - GP_IO_SEL2 = 0x%x\n",
+	config_data = inl((res_base)->start + 0x034);
+	dev_notice(dev, ": GPIO DEBUG - GP_IO_SEL2 0x34 = 0x%08x\n",
 					config_data);
-
-	ichx_priv.gpio_base = res_base;
-	ichx_priv.use_gpio = ich_info->use_gpio;
 
 	/*
 	 * If necessary, determine the I/O address of ACPI/power management
