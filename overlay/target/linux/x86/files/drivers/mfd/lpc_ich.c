@@ -489,7 +489,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
 	[LPC_DH89XXCC] = {
 		.name = "DH89xxCC",
 		.iTCO_version = 2,
-        .gpio_version = PCH_DH89XXCC_GPIO,
+		.gpio_version = PCH_DH89XXCC_GPIO,
 	},
 	[LPC_PPT] = {
 		.name = "Panther Point",
@@ -916,7 +916,7 @@ static int lpc_ich_check_conflict_gpio(struct resource *res)
 	u8 use_gpio = 0;
 
 	if (resource_size(res) >= 0x50 &&
-	    !acpi_check_region(res->start + 0x40, 0x10, "LPC ICH GPIO3"))
+		!acpi_check_region(res->start + 0x40, 0x10, "LPC ICH GPIO3"))
 		use_gpio |= 1 << 2;
 
 	if (!acpi_check_region(res->start + 0x30, 0x10, "LPC ICH GPIO2"))
@@ -934,7 +934,6 @@ static int lpc_ich_init_gpio(struct pci_dev *dev)
 	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
 	u32 base_addr_cfg;
 	u32 base_addr;
-    u32 config_data = 0;
 	int ret;
 	bool acpi_conflict = false;
 	struct resource *res;
@@ -980,7 +979,7 @@ gpe0_done:
 	switch (lpc_chipset_info[priv->chipset].gpio_version) {
 	case ICH_V5_GPIO:
 	case ICH_V10CORP_GPIO:
-    case PCH_DH89XXCC_GPIO:
+	case PCH_DH89XXCC_GPIO:
 		res->end = res->start + 128 - 1;
 		break;
 	default:
@@ -997,19 +996,9 @@ gpe0_done:
 	lpc_chipset_info[priv->chipset].use_gpio = ret;
 	lpc_ich_enable_gpio_space(dev);
 
-    /* Debug GPIO_USE_SEL2 */
-    config_data = inl(base_addr + 0x034);
-	dev_notice(&dev->dev, ": GPIO DEBUG - GPIO_USE_SEL2 = 0x%08x\n",
-					config_data);
-
-    /* Debug GP_IO_SEL2 */
-    config_data = inl(base_addr + 0x038);
-	dev_notice(&dev->dev, ": GPIO DEBUG - GP_IO_SEL2 = 0x%08x\n",
-					config_data);
-
 	lpc_ich_finalize_gpio_cell(dev);
 	ret = mfd_add_devices(&dev->dev, PLATFORM_DEVID_AUTO,
-			      &lpc_ich_gpio_cell, 1, NULL, 0, NULL);
+				  &lpc_ich_gpio_cell, 1, NULL, 0, NULL);
 
 gpio_done:
 	if (acpi_conflict)
@@ -1090,7 +1079,7 @@ static int lpc_ich_init_wdt(struct pci_dev *dev)
 		goto wdt_done;
 
 	ret = mfd_add_devices(&dev->dev, PLATFORM_DEVID_AUTO,
-			      &lpc_ich_wdt_cell, 1, NULL, 0, NULL);
+				  &lpc_ich_wdt_cell, 1, NULL, 0, NULL);
 
 wdt_done:
 	return ret;
@@ -1166,7 +1155,7 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
 	lpc_ich_spi_cell.pdata_size = sizeof(*info);
 
 	return mfd_add_devices(&dev->dev, PLATFORM_DEVID_NONE,
-			       &lpc_ich_spi_cell, 1, NULL, 0, NULL);
+				   &lpc_ich_spi_cell, 1, NULL, 0, NULL);
 }
 
 static int lpc_ich_probe(struct pci_dev *dev,
@@ -1177,7 +1166,7 @@ static int lpc_ich_probe(struct pci_dev *dev,
 	bool cell_added = false;
 
 	priv = devm_kzalloc(&dev->dev,
-			    sizeof(struct lpc_ich_priv), GFP_KERNEL);
+				sizeof(struct lpc_ich_priv), GFP_KERNEL);
 	if (!priv)
 		return -ENOMEM;
 

@@ -367,8 +367,8 @@ static struct ichx_desc avoton_desc = {
 
 /* DC89xxCC PCH, similar to Intel 5 Series */
 static struct ichx_desc dc89xxcc_desc = {
-    /* Needed for GPIO 60, sadly it's all we can test atm */
-    .use_sel_ignore = {0x0, 0x10000000, 0x0},
+	/* Needed for GPIO 60, sadly it's all we can test atm */
+	.use_sel_ignore = {0x0, 0x10000000, 0x0},
 
 	/* GPIO 0-15 are read in the GPE0_STS PM register */
 	.uses_gpe0 = true,
@@ -402,6 +402,7 @@ static int ichx_gpio_probe(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 	struct lpc_ich_info *ich_info = dev_get_platdata(dev);
 	struct resource *res_base, *res_pm;
+	u64 config_data = 0;
 	int err;
 
 	if (!ich_info)
@@ -432,8 +433,9 @@ static int ichx_gpio_probe(struct platform_device *pdev)
 	case AVOTON_GPIO:
 		ichx_priv.desc = &avoton_desc;
 		break;
-    case PCH_DH89XXCC_GPIO:
-        ichx_priv.desc = &dc89xxcc_desc;
+	case PCH_DH89XXCC_GPIO:
+		ichx_priv.desc = &dc89xxcc_desc;
+		break;
 	default:
 		return -ENODEV;
 	}
@@ -446,6 +448,16 @@ static int ichx_gpio_probe(struct platform_device *pdev)
 					ich_info->use_gpio);
 	if (err)
 		return err;
+
+	/* Debug GPIO_USE_SEL2 */
+	config_data = inl((u64)res_base + 0x034);
+	dev_notice(dev, ": GPIO DEBUG - GPIO_USE_SEL2 = 0x%x\n",
+					config_data);
+
+	/* Debug GP_IO_SEL2 */
+	config_data = inl((u64)res_base + 0x038);
+	dev_notice(dev, ": GPIO DEBUG - GP_IO_SEL2 = 0x%x\n",
+					config_data);
 
 	ichx_priv.gpio_base = res_base;
 	ichx_priv.use_gpio = ich_info->use_gpio;
