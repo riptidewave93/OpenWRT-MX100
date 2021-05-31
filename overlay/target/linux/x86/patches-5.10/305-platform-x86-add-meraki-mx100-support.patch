@@ -216,7 +216,7 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +	}
 +
 +	/* We need to make sure that GPIO60 isn't set to native mode as is default since it's our 
-+    * Reset Button. To do this, write to GPIO_USE_SEL2 to have GPIO60 set to GPIO mode.
++	 * Reset Button. To do this, write to GPIO_USE_SEL2 to have GPIO60 set to GPIO mode.
 +	 * This is documented on page 1609 of the PCH datasheet, order number 327879-005US
 +	 */
 +	outl(inl(0x530) | BIT(28), 0x530);
