@@ -149,6 +149,8 @@ static int ichx_read_bit(int reg, unsigned int nr)
 
 	spin_unlock_irqrestore(&ichx_priv.lock, flags);
 
+	/*printk("ichx_read_bit: %x = %x\n", BIT(bit), !!(data & BIT(bit)));*/
+
 	return !!(data & BIT(bit));
 }
 
@@ -367,13 +369,8 @@ static struct ichx_desc avoton_desc = {
 
 /* DC89xxCC PCH, similar to Intel 5 Series */
 static struct ichx_desc dc89xxcc_desc = {
-	/* Needed for GPIO 60, sadly it's all we can test atm */
-	.use_sel_ignore = {0x0, 0x10000000, 0x0},
-
-	/* GPIO 0-15 are read in the GPE0_STS PM register */
-	.uses_gpe0 = true,
-
 	.ngpio = 76,
+	.have_blink = true,
 	.regs = ichx_regs,
 	.reglen = ichx_reglen,
 };
@@ -402,7 +399,7 @@ static int ichx_gpio_probe(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 	struct lpc_ich_info *ich_info = dev_get_platdata(dev);
 	struct resource *res_base, *res_pm;
-	u64 config_data = 0;
+	int config_data;
 	int err;
 
 	if (!ich_info)
@@ -452,15 +449,21 @@ static int ichx_gpio_probe(struct platform_device *pdev)
 	ichx_priv.gpio_base = res_base;
 	ichx_priv.use_gpio = ich_info->use_gpio;
 
-	/* Debug GPIO_USE_SEL2 */
-	config_data = inl((res_base)->start + 0x030);
-	dev_notice(dev, ": GPIO DEBUG - GPIO_USE_SEL2 0x30 = 0x%08x\n",
-					config_data);
-
-	/* Debug GP_IO_SEL2 */
-	config_data = inl((res_base)->start + 0x034);
-	dev_notice(dev, ": GPIO DEBUG - GP_IO_SEL2 0x34 = 0x%08x\n",
-					config_data);
+	/* Platform specific tweaks */
+	switch (ich_info->gpio_version) {
+	case PCH_DH89XXCC_GPIO:
+		/* 
+		 * Right now, the only device using this is the Meraki MX100 which 
+		 * has a BIOS that doesn't configure GPIO 60, our reset button, correctly.
+		 * This is a workaround for that until it can be moved elsewhere.
+		 */
+		dev_notice(dev, ": Applying PCH_DH89XXCC specific platform tweaks\n");
+		/* Make GPIO_USE_SEL2 set GPIO60 to be used as a GPIO, not native. */
+		outl(0x1ba313ff, (res_base)->start + 0x030);
+		break;
+	default:
+		break;
+	}
 
 	/*
 	 * If necessary, determine the I/O address of ACPI/power management
