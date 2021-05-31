@@ -1,0 +1,28 @@
+diff -Naur linux-5.10.41-untouched/drivers/gpio/gpio-ich.c linux-5.10.41/drivers/gpio/gpio-ich.c
+--- linux-5.10.41-untouched/drivers/gpio/gpio-ich.c	2021-05-31 12:31:54.122933474 -0500
++++ linux-5.10.41/drivers/gpio/gpio-ich.c	2021-05-31 14:26:24.659129454 -0500
+@@ -365,6 +364,14 @@
+ 	.use_outlvl_cache = true,
+ };
+ 
++/* DC89xxCC PCH, similar to Intel 5 Series */
++static struct ichx_desc dc89xxcc_desc = {
++	.ngpio = 76,
++	.have_blink = true,
++	.regs = ichx_regs,
++	.reglen = ichx_reglen,
++};
++
+ static int ichx_gpio_request_regions(struct device *dev,
+ 	struct resource *res_base, const char *name, u8 use_gpio)
+ {
+@@ -419,6 +427,9 @@
+ 	case AVOTON_GPIO:
+ 		ichx_priv.desc = &avoton_desc;
+ 		break;
++	case PCH_DH89XXCC_GPIO:
++		ichx_priv.desc = &dc89xxcc_desc;
++		break;
+ 	default:
+ 		return -ENODEV;
+ 	}

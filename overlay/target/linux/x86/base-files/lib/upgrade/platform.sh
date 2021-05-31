@@ -69,7 +69,7 @@ platform_do_bootloader_upgrade() {
         cisco-mx100-hw)
             # If the MX100 is booted UEFI AND the SATA HDD exists, we need to change
             # grub's root= to hd1 for it to boot correctly, otherwise we can keep it hd0.
-            if [ -d /sys/firmware/efi ] && [ "$(ls -a /dev/sd[a-z] | wc -w)" -ge 1 ] ; then
+            if [ -d /sys/firmware/efi ] && [ "$(ls -a /dev/sd[a-z] | wc -w)" -gt 1 ] ; then
                 sed -i "s|hd0,${parttable}1|hd1,${parttable}1|g" /tmp/boot/boot/grub/grub.cfg
             fi
             ;;
