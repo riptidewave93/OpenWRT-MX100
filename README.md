@@ -46,8 +46,9 @@ Once done, you can power off the MX100, plug the SATA disk back in, and power it
 To Do
 -----
 ##### MX100
-* Reset button (polling issue atm)
-* Other?
+* Upstream changes to lpc_ich.c (Intel ICH MFD driver)
+* Upstream changes to gpio-ich.c (Intel ICH GPIO Driver)
+* Upstream the board to OpenWRT
 
 Working
 -----
@@ -55,6 +56,7 @@ Working
 * Ethernet
 * NU801 Driver
 * LED's/GPIOs
+* Reset button
 * System Integration
 * Sysupgrade Support
 
