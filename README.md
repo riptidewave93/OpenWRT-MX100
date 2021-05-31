@@ -46,6 +46,7 @@ Once done, you can power off the MX100, plug the SATA disk back in, and power it
 To Do
 -----
 ##### MX100
+* Fixup NIC ordering if possible
 * Upstream changes to lpc_ich.c (Intel ICH MFD driver)
 * Upstream changes to gpio-ich.c (Intel ICH GPIO Driver)
 * Upstream the board to OpenWRT

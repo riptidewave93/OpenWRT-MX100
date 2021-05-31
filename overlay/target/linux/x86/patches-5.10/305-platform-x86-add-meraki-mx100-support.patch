@@ -215,9 +215,9 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +		return -ENODEV;
 +	}
 +
-+	/* Before we do anything with GPIOs, we need to override a BIOS bug that sets the PCH
-+	 * GPIO controller register GPIO_USE_SEL2 to have GPIO 60 in Native mode. We are setting
-+	 * it to be in GPIO mode so we can use it for our reset button.
++	/* We need to make sure that GPIO60 isn't set to native mode as is default since it's our 
++    * Reset Button. To do this, write to GPIO_USE_SEL2 to have GPIO60 set to GPIO mode.
++	 * This is documented on page 1609 of the PCH datasheet, order number 327879-005US
 +	 */
 +	outl(inl(0x530) | BIT(28), 0x530);
 +
