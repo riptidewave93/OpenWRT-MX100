@@ -85,27 +85,10 @@ endef
 $(eval $(call KernelPackage,pcengines-apuv2))
 
 
-define KernelPackage/leds-nu801
-  SUBMENU:=$(LEDS_MENU)
-  TITLE:=NU801 LED Driver support
-  DEPENDS:=@GPIO_SUPPORT
-  KCONFIG:=CONFIG_LEDS_NU801
-  FILES:=$(LINUX_DIR)/drivers/leds/leds-nu801.ko
-  AUTOLOAD:=$(call AutoLoad,60,leds-nu801)
-endef
-
-define KernelPackage/leds-nu801/description
- Kernel module for the nu801 LED driver used on a wide range of
- Meraki hardware.
-endef
-
-$(eval $(call KernelPackage,leds-nu801))
-
-
 define KernelPackage/meraki-mx100
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Cisco Meraki MX100 Platform Driver
-  DEPENDS:=@TARGET_x86 +kmod-leds-gpio +kmod-leds-nu801
+  DEPENDS:=@TARGET_x86 +kmod-leds-gpio +nu801
   KCONFIG:=CONFIG_MERAKI_MX100
   FILES:=$(LINUX_DIR)/drivers/platform/x86/meraki-mx100.ko
   AUTOLOAD:=$(call AutoLoad,60,meraki-mx100)
@@ -113,7 +96,9 @@ endef
 
 define KernelPackage/meraki-mx100/description
   This driver provides support for the front button and LEDs on
-  the Cisco Meraki MX100 (Tinkerbell) 1U appliance.
+  the Cisco Meraki MX100 (Tinkerbell) 1U appliance. Note this also
+  selects the gpio-cdev nu801 userspace driver to support the Status
+  LED.
 endef
 
 $(eval $(call KernelPackage,meraki-mx100))

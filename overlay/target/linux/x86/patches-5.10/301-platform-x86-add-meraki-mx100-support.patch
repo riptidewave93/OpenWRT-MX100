@@ -36,7 +36,7 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/Makefile linux-5.10.41/d
 diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.10.41/drivers/platform/x86/meraki-mx100.c
 --- linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c	1969-12-31 18:00:00.000000000 -0600
 +++ linux-5.10.41/drivers/platform/x86/meraki-mx100.c	2021-05-31 14:35:40.690580148 -0500
-@@ -0,0 +1,217 @@
+@@ -0,0 +1,187 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +
 +/*
@@ -59,7 +59,7 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +#include <linux/input.h>
 +#include <linux/kernel.h>
 +#include <linux/leds.h>
-+#include <linux/leds-nu801.h>
++/*#include <linux/leds-nu801.h>*/
 +#include <linux/module.h>
 +#include <linux/platform_device.h>
 +
@@ -140,29 +140,6 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +	.leds		= tink_leds,
 +};
 +
-+/* NU801 */
-+static struct led_nu801_template tink_nu801_template = {
-+	.device_name = "mx100",
-+	.name = "tricolor",
-+	.num_leds = 1,
-+	.cki = TINK_GPIO_OFFSET + 41,
-+	.sdi = TINK_GPIO_OFFSET + 6,
-+	.lei = TINK_GPIO_OFFSET + 5,
-+	.ndelay = 150,
-+	.init_brightness = {
-+		LED_OFF,
-+		LED_OFF,
-+		LED_OFF,
-+	},
-+	.default_trigger = "none",
-+	.led_colors = { "blue", "green", "red" },
-+};
-+
-+static struct led_nu801_platform_data tink_nu801_pdata = {
-+	.num_controllers = 1,
-+	.template = &tink_nu801_template,
-+};
-+
 +/* Reset Button */
 +static struct gpio_keys_button tink_buttons[] = {
 +	{
@@ -185,7 +162,6 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +
 +/* Board setup */
 +
-+static struct platform_device *tink_nu801_pdev;
 +static struct platform_device *tink_leds_pdev;
 +static struct platform_device *tink_keys_pdev;
 +
@@ -221,11 +197,6 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +	 */
 +	outl(inl(0x530) | BIT(28), 0x530);
 +
-+	tink_nu801_pdev = tink_create_dev(
-+		"leds-nu801",
-+		&tink_nu801_pdata,
-+		sizeof(tink_nu801_pdata));
-+
 +	tink_leds_pdev = tink_create_dev(
 +		"leds-gpio",
 +		&tink_leds_pdata,
@@ -243,7 +214,6 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +{
 +	platform_device_unregister(tink_keys_pdev);
 +	platform_device_unregister(tink_leds_pdev);
-+	platform_device_unregister(tink_nu801_pdev);
 +}
 +
 +module_init(tink_board_init);
@@ -253,4 +223,4 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +MODULE_DESCRIPTION("Cisco Meraki MX100 Platform Driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:meraki-mx100");
-+MODULE_SOFTDEP("pre: platform:lpc_ich platform:leds-gpio platform:leds-nu801 platform:gpio_keys_polled");
++MODULE_SOFTDEP("pre: platform:lpc_ich platform:leds-gpio platform:gpio_keys_polled");
