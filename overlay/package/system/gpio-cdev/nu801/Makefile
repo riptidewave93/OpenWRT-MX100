@@ -21,13 +21,13 @@ PKG_LICENSE_FILES:=LICENSE
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-CMAKE_OPTIONS += \
-	-DCMAKE_BUILD_TYPE=Debug
-
 define Package/nu801
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Userspace GPIO Drivers
+  DEPENDS:=+kmod-leds-uleds
+  KCONFIG:= \
+    CONFIG_GPIO_CDEV=y
   TITLE:=NU801 LED Driver
 endef
 

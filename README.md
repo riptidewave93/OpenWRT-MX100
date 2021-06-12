@@ -47,8 +47,7 @@ To Do
 -----
 ##### MX100
 * Fixup NIC ordering if possible
-* Upstream changes to lpc_ich.c (Intel ICH MFD driver)
-* Upstream changes to gpio-ich.c (Intel ICH GPIO Driver)
+* Upstream platform driver
 * Upstream the board to OpenWRT
 
 Working
