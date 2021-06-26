@@ -36,7 +36,7 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/Makefile linux-5.10.41/d
 diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.10.41/drivers/platform/x86/meraki-mx100.c
 --- linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c	1969-12-31 18:00:00.000000000 -0600
 +++ linux-5.10.41/drivers/platform/x86/meraki-mx100.c	2021-05-31 14:35:40.690580148 -0500
-@@ -0,0 +1,187 @@
+@@ -0,0 +1,186 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +
 +/*
@@ -187,7 +187,6 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +static int __init tink_board_init(void)
 +{
 +	if (!dmi_match(DMI_SYS_VENDOR, "Cisco") || !dmi_match(DMI_PRODUCT_NAME, "MX100-HW")) {
-+		pr_err("Failed to detect Meraki MX100 via DMI!\n");
 +		return -ENODEV;
 +	}
 +

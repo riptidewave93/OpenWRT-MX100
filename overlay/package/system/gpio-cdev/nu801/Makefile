@@ -1,9 +1,4 @@
-#
-# Copyright (C) 2021 OpenWrt.org
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-#
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 include $(TOPDIR)/rules.mk
 
@@ -25,7 +20,7 @@ define Package/nu801
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Userspace GPIO Drivers
-  DEPENDS:=+kmod-leds-uleds
+  DEPENDS:=@LINUX_5_10 +kmod-leds-uleds
   KCONFIG:= \
     CONFIG_GPIO_CDEV=y
   TITLE:=NU801 LED Driver
