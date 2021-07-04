@@ -7,7 +7,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/chunkeey/nu801.git
-PKG_SOURCE_VERSION:=39661bfcd0ee9a8e7e9a3e920abe1064c589aaa3
+PKG_SOURCE_VERSION:=8818b6c1422249fe2d9fea6865045a22b1318bff
 
 PKG_MAINTAINER:=Christian Lamparter <chunkeey@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later

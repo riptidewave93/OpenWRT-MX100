@@ -36,7 +36,7 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/Makefile linux-5.10.41/d
 diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.10.41/drivers/platform/x86/meraki-mx100.c
 --- linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c	1969-12-31 18:00:00.000000000 -0600
 +++ linux-5.10.41/drivers/platform/x86/meraki-mx100.c	2021-05-31 14:35:40.690580148 -0500
-@@ -0,0 +1,186 @@
+@@ -0,0 +1,185 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +
 +/*
@@ -59,7 +59,6 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +#include <linux/input.h>
 +#include <linux/kernel.h>
 +#include <linux/leds.h>
-+/*#include <linux/leds-nu801.h>*/
 +#include <linux/module.h>
 +#include <linux/platform_device.h>
 +

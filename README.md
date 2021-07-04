@@ -1,6 +1,14 @@
 # OpenWRT-MX100
 Bringup for the Cisco Meraki MX100 on OpenWRT.
 
+Device Specs
+-----
+CPU = Intel Xeon E3-1200 Series (Sandy Bridge) 1.5GHz 2 core/4 thread
+Memory = 4GB DDR3 1600 ECC (upgradeable?)
+Storage = 1Gb USB NAND (onboard), 1TB SATA HDD
+Wireless = None
+Wired = 10x 1Gb RJ45, 2x 1Gb SFP
+
 Building
 -----
 #### Build Only
