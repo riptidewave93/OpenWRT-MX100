@@ -22,7 +22,7 @@ if [ ! -d "$clonedir" ]; then
   Msg "Cloning Repo..."
   git clone https://github.com/openwrt/openwrt.git $clonedir
   cd $clonedir
-  git reset --hard 3c3a96df3ff51d99f608be435dfe3d25231ff845
+  git reset --hard b0483b19f981bbe024cd447cfe469765f49cc587
   cd - > /dev/null
 fi
 
@@ -65,7 +65,7 @@ if [ "$modify" -eq "1" ]; then
   cd $clonedir
   Msg "Loading Menuconfig"
   make menuconfig -j`nproc` V=s
-  #make kernel_menuconfig -j`nproc` V=s CONFIG_TARGET=subtarget
+  make kernel_menuconfig -j`nproc` Vhttps://openwrt.org/=s CONFIG_TARGET=subtarget
   cd - > /dev/null
 fi
 

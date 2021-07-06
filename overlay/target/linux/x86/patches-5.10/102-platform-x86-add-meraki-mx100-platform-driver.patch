@@ -1,13 +1,35 @@
-diff -Naur linux-5.10.41-untouched/drivers/platform/x86/Kconfig linux-5.10.41/drivers/platform/x86/Kconfig
---- linux-5.10.41-untouched/drivers/platform/x86/Kconfig	2021-05-31 12:31:54.606939032 -0500
-+++ linux-5.10.41/drivers/platform/x86/Kconfig	2021-05-31 14:30:47.389446027 -0500
-@@ -302,6 +302,18 @@
- 	  If you have an ACPI-WMI compatible Eee PC laptop (>= 1000), say Y or M
+From d3e750f5562ddf14ae2693059643a99442106b1e Mon Sep 17 00:00:00 2001
+From: Chris Blake <chrisrblake93@gmail.com>
+Date: Tue, 6 Jul 2021 13:43:39 -0500
+Subject: [PATCH] platform/x86: add meraki-mx100 platform driver
+
+This adds platform support for the Cisco Meraki MX100 (Tinkerbell)
+network appliance. This sets up the network LEDs and Reset
+button. Note that this patch requires
+mfd: lpc_ich: Enable GPIO driver for DH89xxCC which has been accepted
+and is currently targeted for 5.15.
+
+Signed-off-by: Chris Blake <chrisrblake93@gmail.com>
+Co-developed-by: Christian Lamparter <chunkeey@gmail.com>
+---
+ drivers/platform/x86/Kconfig        |  13 ++
+ drivers/platform/x86/Makefile       |   3 +
+ drivers/platform/x86/meraki-mx100.c | 185 ++++++++++++++++++++++++++++
+ 3 files changed, 201 insertions(+)
+ create mode 100644 drivers/platform/x86/meraki-mx100.c
+
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 7d385c3b2239..8d70176e335f 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -302,6 +302,19 @@ config ASUS_NB_WMI
+ 	  If you have an ACPI-WMI compatible Asus Notebook, say Y or M
  	  here.
  
 +config MERAKI_MX100
 +	tristate "Cisco Meraki MX100 Platform Driver"
 +	depends on GPIOLIB
++	depends on GPIO_ICH
 +	depends on LEDS_CLASS
 +	select LEDS_GPIO
 +	help
@@ -17,25 +39,28 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/Kconfig linux-5.10.41/dr
 +	  To compile this driver as a module, choose M here: the module
 +	  will be called meraki-mx100.
 +
- config DCDBAS
- 	tristate "Dell Systems Management Base Driver"
- 	depends on X86
-diff -Naur linux-5.10.41-untouched/drivers/platform/x86/Makefile linux-5.10.41/drivers/platform/x86/Makefile
---- linux-5.10.41-untouched/drivers/platform/x86/Makefile	2021-05-31 12:31:54.606939032 -0500
-+++ linux-5.10.41/drivers/platform/x86/Makefile	2021-05-31 14:30:47.389446027 -0500
-@@ -33,6 +33,9 @@
+ config EEEPC_LAPTOP
+ 	tristate "Eee PC Hotkey Driver"
+ 	depends on ACPI
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 7ee369aab10d..25c5aee1cde7 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -39,6 +39,9 @@ obj-$(CONFIG_ASUS_NB_WMI)	+= asus-nb-wmi.o
  obj-$(CONFIG_EEEPC_LAPTOP)	+= eeepc-laptop.o
  obj-$(CONFIG_EEEPC_WMI)		+= eeepc-wmi.o
  
 +# Cisco/Meraki
-+obj-$(CONFIG_MERAKI_MX100)		+= meraki-mx100.o
++obj-$(CONFIG_MERAKI_MX100)	+= meraki-mx100.o
 +
  # Dell
- obj-$(CONFIG_DCDBAS)			+= dcdbas.o
- obj-$(CONFIG_DELL_SMBIOS)		+= dell-smbios.o
-diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.10.41/drivers/platform/x86/meraki-mx100.c
---- linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c	1969-12-31 18:00:00.000000000 -0600
-+++ linux-5.10.41/drivers/platform/x86/meraki-mx100.c	2021-05-31 14:35:40.690580148 -0500
+ obj-$(CONFIG_X86_PLATFORM_DRIVERS_DELL)		+= dell/
+ 
+diff --git a/drivers/platform/x86/meraki-mx100.c b/drivers/platform/x86/meraki-mx100.c
+new file mode 100644
+index 000000000000..12b17ef06d14
+--- /dev/null
++++ b/drivers/platform/x86/meraki-mx100.c
 @@ -0,0 +1,185 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +
@@ -221,4 +246,7 @@ diff -Naur linux-5.10.41-untouched/drivers/platform/x86/meraki-mx100.c linux-5.1
 +MODULE_DESCRIPTION("Cisco Meraki MX100 Platform Driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:meraki-mx100");
-+MODULE_SOFTDEP("pre: platform:lpc_ich platform:leds-gpio platform:gpio_keys_polled");
++MODULE_SOFTDEP("pre: platform:gpio_ich platform:leds-gpio platform:gpio_keys_polled");
+-- 
+2.25.1
+
