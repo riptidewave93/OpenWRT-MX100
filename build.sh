@@ -22,7 +22,7 @@ if [ ! -d "$clonedir" ]; then
   Msg "Cloning Repo..."
   git clone https://github.com/openwrt/openwrt.git $clonedir
   cd $clonedir
-  git reset --hard b0483b19f981bbe024cd447cfe469765f49cc587
+  git reset --hard b1b16bddb0b45c65c25957da55463ba8c000a588
   cd - > /dev/null
 fi
 
