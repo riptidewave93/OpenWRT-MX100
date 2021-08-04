@@ -1,6 +1,6 @@
-From d3e750f5562ddf14ae2693059643a99442106b1e Mon Sep 17 00:00:00 2001
+From 2ad6577e97752a334b76ac0afe313c63342411bc Mon Sep 17 00:00:00 2001
 From: Chris Blake <chrisrblake93@gmail.com>
-Date: Tue, 6 Jul 2021 13:43:39 -0500
+Date: Tue, 3 Aug 2021 20:51:17 -0500
 Subject: [PATCH] platform/x86: add meraki-mx100 platform driver
 
 This adds platform support for the Cisco Meraki MX100 (Tinkerbell)
@@ -14,8 +14,8 @@ Co-developed-by: Christian Lamparter <chunkeey@gmail.com>
 ---
  drivers/platform/x86/Kconfig        |  13 ++
  drivers/platform/x86/Makefile       |   3 +
- drivers/platform/x86/meraki-mx100.c | 185 ++++++++++++++++++++++++++++
- 3 files changed, 201 insertions(+)
+ drivers/platform/x86/meraki-mx100.c | 212 ++++++++++++++++++++++++++++
+ 3 files changed, 228 insertions(+)
  create mode 100644 drivers/platform/x86/meraki-mx100.c
 
 diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
@@ -58,10 +58,10 @@ index 7ee369aab10d..25c5aee1cde7 100644
  
 diff --git a/drivers/platform/x86/meraki-mx100.c b/drivers/platform/x86/meraki-mx100.c
 new file mode 100644
-index 000000000000..12b17ef06d14
+index 000000000000..d64508aeb92c
 --- /dev/null
 +++ b/drivers/platform/x86/meraki-mx100.c
-@@ -0,0 +1,185 @@
+@@ -0,0 +1,212 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +
 +/*
@@ -81,81 +81,50 @@ index 000000000000..12b17ef06d14
 +#include <linux/err.h>
 +#include <linux/gpio.h>
 +#include <linux/gpio_keys.h>
++#include <linux/gpio/machine.h>
 +#include <linux/input.h>
 +#include <linux/kernel.h>
 +#include <linux/leds.h>
 +#include <linux/module.h>
 +#include <linux/platform_device.h>
 +
-+#define TINK_GPIO_OFFSET	436
++#define TINK_GPIO_DRIVER_NAME "gpio_ich"
 +
 +/* LEDs */
 +static const struct gpio_led tink_leds[] = {
 +	{
-+		.name = "mx100:green:internet", 
-+		.gpio = TINK_GPIO_OFFSET + 11,
-+		.active_low = 1,
++		.name = "mx100:green:internet",
 +		.default_trigger = "default-on",
 +	},
 +	{
 +		.name = "mx100:green:lan2",
-+		.gpio = TINK_GPIO_OFFSET + 18,
 +	},
 +	{
 +		.name = "mx100:green:lan3",
-+		.gpio = TINK_GPIO_OFFSET + 20,
 +	},
 +	{
 +		.name = "mx100:green:lan4",
-+		.gpio = TINK_GPIO_OFFSET + 22,
 +	},
 +	{
 +		.name = "mx100:green:lan5",
-+		.gpio = TINK_GPIO_OFFSET + 23,
 +	},
 +	{
 +		.name = "mx100:green:lan6",
-+		.gpio = TINK_GPIO_OFFSET + 32,
 +	},
 +	{
 +		.name = "mx100:green:lan7",
-+		.gpio = TINK_GPIO_OFFSET + 34,
 +	},
 +	{
 +		.name = "mx100:green:lan8",
-+		.gpio = TINK_GPIO_OFFSET + 35,
 +	},
 +	{
 +		.name = "mx100:green:lan9",
-+		.gpio = TINK_GPIO_OFFSET + 36,
 +	},
 +	{
 +		.name = "mx100:green:lan10",
-+		.gpio = TINK_GPIO_OFFSET + 37,
 +	},
 +	{
 +		.name = "mx100:green:lan11",
-+		.gpio = TINK_GPIO_OFFSET + 48,
-+	},
-+	{
-+		.name = "mx100:green:ha",
-+		.gpio = TINK_GPIO_OFFSET + 16,
-+		.active_low = 1,
-+	},
-+	{
-+		.name = "mx100:orange:ha",
-+		.gpio = TINK_GPIO_OFFSET + 7,
-+		.active_low = 1,
-+	},
-+	{
-+		.name = "mx100:green:usb",
-+		.gpio = TINK_GPIO_OFFSET + 21,
-+		.active_low = 1,
-+	},
-+	{
-+		.name = "mx100:orange:usb",
-+		.gpio = TINK_GPIO_OFFSET + 19,
-+		.active_low = 1,
 +	},
 +};
 +
@@ -164,13 +133,48 @@ index 000000000000..12b17ef06d14
 +	.leds		= tink_leds,
 +};
 +
++static struct gpiod_lookup_table tink_leds_table = {
++	.dev_id = "leds-gpio",
++	.table = {
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 11,
++				NULL, 0, GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 18,
++				NULL, 1, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 20,
++				NULL, 2, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 22,
++				NULL, 3, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 23,
++				NULL, 4, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 32,
++				NULL, 5, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 34,
++				NULL, 6, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 35,
++				NULL, 7, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 36,
++				NULL, 8, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 37,
++				NULL, 9, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 48,
++				NULL, 10, GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 16,
++				NULL, 11, GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 7,
++				NULL, 12, GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 21,
++				NULL, 13, GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 19,
++				NULL, 14, GPIO_ACTIVE_LOW),
++	}
++};
++
 +/* Reset Button */
 +static struct gpio_keys_button tink_buttons[] = {
 +	{
 +		.desc			= "Reset",
 +		.type			= EV_KEY,
 +		.code			= KEY_RESTART,
-+		.gpio			= TINK_GPIO_OFFSET + 60,
 +		.active_low             = 1,
 +		.debounce_interval      = 100,
 +	},
@@ -184,7 +188,25 @@ index 000000000000..12b17ef06d14
 +	.name		= "mx100-keys",
 +};
 +
++static struct gpiod_lookup_table tink_keys_table = {
++	.dev_id = "gpio-keys-polled",
++	.table = {
++		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 60,
++				NULL, 0, GPIO_ACTIVE_LOW),
++	}
++};
++
 +/* Board setup */
++
++static const struct dmi_system_id tink_systems[] __initconst = {
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Cisco"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "MX100-HW"),
++		},
++	},
++	{} /* Terminating entry */
++};
 +
 +static struct platform_device *tink_leds_pdev;
 +static struct platform_device *tink_keys_pdev;
@@ -210,15 +232,17 @@ index 000000000000..12b17ef06d14
 +
 +static int __init tink_board_init(void)
 +{
-+	if (!dmi_match(DMI_SYS_VENDOR, "Cisco") || !dmi_match(DMI_PRODUCT_NAME, "MX100-HW")) {
-+		return -ENODEV;
-+	}
++	if (!dmi_first_match(tink_systems))
++                return -ENODEV;
 +
 +	/* We need to make sure that GPIO60 isn't set to native mode as is default since it's our 
 +	 * Reset Button. To do this, write to GPIO_USE_SEL2 to have GPIO60 set to GPIO mode.
 +	 * This is documented on page 1609 of the PCH datasheet, order number 327879-005US
 +	 */
 +	outl(inl(0x530) | BIT(28), 0x530);
++
++	gpiod_add_lookup_table(&tink_leds_table);
++	gpiod_add_lookup_table(&tink_keys_table);
 +
 +	tink_leds_pdev = tink_create_dev(
 +		"leds-gpio",
@@ -237,6 +261,8 @@ index 000000000000..12b17ef06d14
 +{
 +	platform_device_unregister(tink_keys_pdev);
 +	platform_device_unregister(tink_leds_pdev);
++	gpiod_remove_lookup_table(&tink_keys_table);
++	gpiod_remove_lookup_table(&tink_leds_table);
 +}
 +
 +module_init(tink_board_init);
@@ -246,7 +272,8 @@ index 000000000000..12b17ef06d14
 +MODULE_DESCRIPTION("Cisco Meraki MX100 Platform Driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:meraki-mx100");
-+MODULE_SOFTDEP("pre: platform:gpio_ich platform:leds-gpio platform:gpio_keys_polled");
++MODULE_DEVICE_TABLE(dmi, tink_systems);
++MODULE_SOFTDEP("pre: platform:" TINK_GPIO_DRIVER_NAME);
 -- 
 2.25.1
 
