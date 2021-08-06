@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 firstbuild=0
 clonedir=./openwrt
@@ -22,7 +23,7 @@ if [ ! -d "$clonedir" ]; then
   Msg "Cloning Repo..."
   git clone https://github.com/openwrt/openwrt.git $clonedir
   cd $clonedir
-  git reset --hard 080a2d4bdf51e227c7184cc118722da128ac5dc5
+  git reset --hard a0b827b916ed51317eddf41cdca35ab73ec4cbdb
   cd - > /dev/null
 fi
 
