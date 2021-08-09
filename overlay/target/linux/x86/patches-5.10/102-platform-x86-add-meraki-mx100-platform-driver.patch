@@ -1,21 +1,27 @@
-From 2ad6577e97752a334b76ac0afe313c63342411bc Mon Sep 17 00:00:00 2001
+From 957416295d75bdaeee678d80dcb167d592302cc9 Mon Sep 17 00:00:00 2001
 From: Chris Blake <chrisrblake93@gmail.com>
-Date: Tue, 3 Aug 2021 20:51:17 -0500
-Subject: [PATCH] platform/x86: add meraki-mx100 platform driver
+Date: Mon, 9 Aug 2021 06:47:27 -0500
+Subject: [PATCH v3] platform/x86: add meraki-mx100 platform driver
 
 This adds platform support for the Cisco Meraki MX100 (Tinkerbell)
 network appliance. This sets up the network LEDs and Reset
-button. Note that this patch requires
-mfd: lpc_ich: Enable GPIO driver for DH89xxCC which has been accepted
-and is currently targeted for 5.15.
+button.
 
-Signed-off-by: Chris Blake <chrisrblake93@gmail.com>
+Depends-on: ef0eea5b151ae ("mfd: lpc_ich: Enable GPIO driver for DH89xxCC")
 Co-developed-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Chris Blake <chrisrblake93@gmail.com>
 ---
+
+Changelog:
+V3: Additional cleanups, formatting changes
+V2: Move to using gpiod lookup tables, misc cleanups
+V1: Initial Patch
+
  drivers/platform/x86/Kconfig        |  13 ++
  drivers/platform/x86/Makefile       |   3 +
- drivers/platform/x86/meraki-mx100.c | 212 ++++++++++++++++++++++++++++
- 3 files changed, 228 insertions(+)
+ drivers/platform/x86/meraki-mx100.c | 202 ++++++++++++++++++++++++++++
+ 3 files changed, 218 insertions(+)
  create mode 100644 drivers/platform/x86/meraki-mx100.c
 
 diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
@@ -58,10 +64,10 @@ index 7ee369aab10d..25c5aee1cde7 100644
  
 diff --git a/drivers/platform/x86/meraki-mx100.c b/drivers/platform/x86/meraki-mx100.c
 new file mode 100644
-index 000000000000..d64508aeb92c
+index 000000000000..eebbd0a3d806
 --- /dev/null
 +++ b/drivers/platform/x86/meraki-mx100.c
-@@ -0,0 +1,212 @@
+@@ -0,0 +1,202 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +
 +/*
@@ -79,10 +85,10 @@ index 000000000000..d64508aeb92c
 +
 +#include <linux/dmi.h>
 +#include <linux/err.h>
-+#include <linux/gpio.h>
 +#include <linux/gpio_keys.h>
 +#include <linux/gpio/machine.h>
 +#include <linux/input.h>
++#include <linux/io.h>
 +#include <linux/kernel.h>
 +#include <linux/leds.h>
 +#include <linux/module.h>
@@ -166,6 +172,7 @@ index 000000000000..d64508aeb92c
 +				NULL, 13, GPIO_ACTIVE_LOW),
 +		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 19,
 +				NULL, 14, GPIO_ACTIVE_LOW),
++		{} /* Terminating entry */
 +	}
 +};
 +
@@ -193,11 +200,11 @@ index 000000000000..d64508aeb92c
 +	.table = {
 +		GPIO_LOOKUP_IDX(TINK_GPIO_DRIVER_NAME, 60,
 +				NULL, 0, GPIO_ACTIVE_LOW),
++		{} /* Terminating entry */
 +	}
 +};
 +
 +/* Board setup */
-+
 +static const struct dmi_system_id tink_systems[] __initconst = {
 +	{
 +		.matches = {
@@ -207,23 +214,18 @@ index 000000000000..d64508aeb92c
 +	},
 +	{} /* Terminating entry */
 +};
++MODULE_DEVICE_TABLE(dmi, tink_systems);
 +
 +static struct platform_device *tink_leds_pdev;
 +static struct platform_device *tink_keys_pdev;
 +
 +static struct platform_device * __init tink_create_dev(
-+	const char *name,
-+	const void *pdata,
-+	size_t sz)
++	const char *name, const void *pdata, size_t sz)
 +{
 +	struct platform_device *pdev;
 +
 +	pdev = platform_device_register_data(NULL,
-+		name,
-+		PLATFORM_DEVID_NONE,
-+		pdata,
-+		sz);
-+
++		name, PLATFORM_DEVID_NONE, pdata, sz);
 +	if (IS_ERR(pdev))
 +		pr_err("failed registering %s: %ld\n", name, PTR_ERR(pdev));
 +
@@ -233,9 +235,10 @@ index 000000000000..d64508aeb92c
 +static int __init tink_board_init(void)
 +{
 +	if (!dmi_first_match(tink_systems))
-+                return -ENODEV;
++		return -ENODEV;
 +
-+	/* We need to make sure that GPIO60 isn't set to native mode as is default since it's our 
++	/*
++	 * We need to make sure that GPIO60 isn't set to native mode as is default since it's our
 +	 * Reset Button. To do this, write to GPIO_USE_SEL2 to have GPIO60 set to GPIO mode.
 +	 * This is documented on page 1609 of the PCH datasheet, order number 327879-005US
 +	 */
@@ -244,18 +247,15 @@ index 000000000000..d64508aeb92c
 +	gpiod_add_lookup_table(&tink_leds_table);
 +	gpiod_add_lookup_table(&tink_keys_table);
 +
-+	tink_leds_pdev = tink_create_dev(
-+		"leds-gpio",
-+		&tink_leds_pdata,
-+		sizeof(tink_leds_pdata));
++	tink_leds_pdev = tink_create_dev("leds-gpio",
++		&tink_leds_pdata, sizeof(tink_leds_pdata));
 +
-+	tink_keys_pdev = tink_create_dev(
-+		"gpio-keys-polled",
-+		&tink_buttons_pdata,
-+		sizeof(tink_buttons_pdata));
++	tink_keys_pdev = tink_create_dev("gpio-keys-polled",
++		&tink_buttons_pdata, sizeof(tink_buttons_pdata));
 +
 +	return 0;
 +}
++module_init(tink_board_init);
 +
 +static void __exit tink_board_exit(void)
 +{
@@ -264,16 +264,12 @@ index 000000000000..d64508aeb92c
 +	gpiod_remove_lookup_table(&tink_keys_table);
 +	gpiod_remove_lookup_table(&tink_leds_table);
 +}
-+
-+module_init(tink_board_init);
 +module_exit(tink_board_exit);
 +
 +MODULE_AUTHOR("Chris Blake <chrisrblake93@gmail.com>");
 +MODULE_DESCRIPTION("Cisco Meraki MX100 Platform Driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:meraki-mx100");
-+MODULE_DEVICE_TABLE(dmi, tink_systems);
-+MODULE_SOFTDEP("pre: platform:" TINK_GPIO_DRIVER_NAME);
 -- 
 2.25.1
 
