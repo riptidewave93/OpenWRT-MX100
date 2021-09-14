@@ -1,7 +1,7 @@
-From 916d96271c59c78fcb248d3ed8e5b2afa8deffd5 Mon Sep 17 00:00:00 2001
+From ef0eea5b151aefe1efea78e2fa7c507ff3c56bf0 Mon Sep 17 00:00:00 2001
 From: Chris Blake <chrisrblake93@gmail.com>
-Date: Sun, 6 Jun 2021 17:31:45 -0500
-Subject: [PATCH v3] mfd: lpc_ich: Enable GPIO driver for DH89xxCC
+Date: Mon, 7 Jun 2021 18:35:35 -0500
+Subject: mfd: lpc_ich: Enable GPIO driver for DH89xxCC
 
 Based on the Intel Datasheet for the DH89xxCC PCH, the GPIO driver
 is the same as ICH_v5_GPIO, minus the fact the DH89xxCC also has
@@ -11,19 +11,13 @@ MX100-HW.
 
 Signed-off-by: Chris Blake <chrisrblake93@gmail.com>
 Co-developed-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
-
-Changelog:
-V3: Update commit message format and update contributor message.
-V2: Updated commit message, and added Christian Lamparter as a
-contributor.
-V1: Initial Patch
-
  drivers/mfd/lpc_ich.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-index 3bbb29a7e7a5..f10e53187f67 100644
+index 3bbb29a7e7a57..f10e53187f67a 100644
 --- a/drivers/mfd/lpc_ich.c
 +++ b/drivers/mfd/lpc_ich.c
 @@ -489,6 +489,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
@@ -35,5 +29,4 @@ index 3bbb29a7e7a5..f10e53187f67 100644
  	[LPC_PPT] = {
  		.name = "Panther Point",
 -- 
-2.25.1
-
+cgit 1.2.3-1.el7
