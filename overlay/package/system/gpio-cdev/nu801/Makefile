@@ -20,7 +20,7 @@ define Package/nu801
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Userspace GPIO Drivers
-  DEPENDS:=@LINUX_5_10 +kmod-leds-uleds
+  DEPENDS:=@!LINUX_5_4 +kmod-leds-uleds
   KCONFIG:= \
     CONFIG_GPIO_CDEV=y
   TITLE:=NU801 LED Driver
