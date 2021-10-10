@@ -1,6 +1,8 @@
 # OpenWRT-MX100
 Bringup for the Cisco Meraki MX100 on OpenWRT.
 
+**NOTE: This repo is NO LONGER MAINTAINED as these changes were merged upstream. Refer to https://github.com/openwrt/openwrt/commit/fe9e5fbd7527ad4ff4f5b955823216038a80557d and enjoy the official OpenWRT nightles!**
+
 Device Specs
 -----
 

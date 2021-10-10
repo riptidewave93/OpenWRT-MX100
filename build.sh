@@ -23,7 +23,7 @@ if [ ! -d "$clonedir" ]; then
   Msg "Cloning Repo..."
   git clone https://github.com/openwrt/openwrt.git $clonedir
   cd $clonedir
-  git reset --hard 2c9a07ed28e87bbe2d221d48aaa19b04672646a5
+  git reset --hard b34a349f0757fe6a3d96eb3ba70d63d80e7eba6e
   cd - > /dev/null
 fi
 
@@ -56,7 +56,7 @@ if [ "$firstbuild" -eq "1" ]; then
   ./scripts/feeds install -a
   if [ -f "../config/diffconfig" ]; then
   	Msg "Applying and Expanding config..."
-  	cp ../config/diffconfig ./.config
+  	cp ../config/difconfig ./.config
   	make defconfig
   fi
   cd - > /dev/null
